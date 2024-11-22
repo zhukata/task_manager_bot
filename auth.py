@@ -26,6 +26,6 @@ async def get_tasks(message):
 
     if response.status_code == 200:
         data = response.json()
-        await message.answer(f"Ваши данные: {data}")
+        return data
     else:
-        await message.answer("Ошибка при получении данных. Проверьте ваши права доступа.")
+        raise Exception("Ошибка при получении данных. Проверьте ваши права доступа.")

@@ -59,6 +59,7 @@ async def add_password(message: types.Message, state: FSMContext):
     try:
         await get_token(data, message)
         await message.answer("Что хотите сделать?", reply_markup=LOGIN_KB)
+        await state.clear()
     except:
         await message.answer(f"Ошибка авторизации")
         await state.clear()
