@@ -27,7 +27,10 @@ class AddUser(StatesGroup):
 
 @user_private_router.message(CommandStart())
 async def start_cmd(message: types.Message):
-    await message.answer("Привет, я твой помощник", reply_markup=reply.start_kb.as_markup())
+    await message.answer(
+        "Привет, я твой помощник",
+        reply_markup=reply.start_kb.as_markup()
+        )
 
 
 @user_private_router.message(or_f(Command('about'), F.text.contains("О боте")))
@@ -37,7 +40,10 @@ async def about(message: types.Message):
 
 # Код машины состояний:
 
-@user_private_router.message(StateFilter(None), or_f(Command('login'), F.text.contains("Авторизация")))
+@user_private_router.message(
+    StateFilter(None),
+    or_f(Command('login'), F.text.contains("Авторизация"))
+    )
 async def login(message: types.Message, state: FSMContext):
     await message.answer(
         "Введите логин", reply_markup=types.ReplyKeyboardRemove()

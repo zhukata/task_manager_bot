@@ -40,7 +40,7 @@ async def tasks(message: types.Message):
         await message.answer(f"Ошибка при получении данных. Проверьте ваши права доступа.")
     for task in tasks:
         await message.answer(
-            f"Id: {task['id']}\n Название: {task['name']}\n Описание: {task['description']}",
+            f"id: {task['id']}\n Название: {task['name']}\n Описание: {task['description']}",
             reply_markup=get_callback_btns(
                 btns={
                     "Удалить": f"delete_{task['id']}",
