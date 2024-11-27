@@ -2,8 +2,9 @@ from aiogram import F, Router, types
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth import get_tasks
+from api import get_tasks
 from filters.chat_types import ChatTypeFilter, IsAdmin
 from keyboards.inline import get_callback_btns
 from keyboards.reply import get_keyboard
@@ -32,10 +33,10 @@ class AddTask(StatesGroup):
 
 
 @admin_router.message(F.text == "Список задач")
-async def tasks(message: types.Message):
+async def tasks(message: types.Message, session: AsyncSession):
     await message.answer('погоди секунду')
     try:
-        tasks = await get_tasks(message)
+        tasks = await get_tasks(session, message)
     except:
         await message.answer(f"Ошибка при получении данных. Проверьте ваши права доступа.")
     for task in tasks:

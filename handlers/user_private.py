@@ -3,8 +3,9 @@ from aiogram.filters import CommandStart, Command, or_f
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth import get_token
+from api import add_user, auth_user
 from filters.chat_types import ChatTypeFilter
 from keyboards import reply
 
@@ -59,11 +60,11 @@ async def add_username(message: types.Message, state: FSMContext):
     
     
 @user_private_router.message(AddUser.password, F.text)
-async def add_password(message: types.Message, state: FSMContext):
+async def add_password(message: types.Message, state: FSMContext, session: AsyncSession):
     await state.update_data(password=message.text)
     data = await state.get_data()
     try:
-        await get_token(data, message)
+        await auth_user(session, message, data)
         await message.answer("Что хотите сделать?", reply_markup=LOGIN_KB)
         await state.clear()
     except:

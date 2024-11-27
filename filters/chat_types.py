@@ -1,7 +1,7 @@
 from aiogram.filters import Filter
 from aiogram import Bot, types
 
-import auth
+import api
 
 
 class ChatTypeFilter(Filter):
@@ -17,4 +17,4 @@ class IsAdmin(Filter):
         pass
 
     async def __call__(self, message: types.Message, bot: Bot):
-        return message.from_user.id in auth.user_tokens
+        return message.from_user.id in api.user_tokens
