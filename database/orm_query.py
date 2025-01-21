@@ -18,15 +18,12 @@ async def orm_add_user(session: AsyncSession, data: dict):
     except Exception as e:
         print(f'erorr {e}')
 
-# async def orm_get_Users(session: AsyncSession):
-#     query = select(User)
-#     result = await session.execute(query)
-#     return result.scalars().all()
 
 async def orm_get_user(session: AsyncSession, user_id: int):
     query = select(User).where(User.telegram_id == user_id)
     result = await session.execute(query)
     return result.scalar()
+
 
 async def orm_update_user(session: AsyncSession, user_id: int, user):
     query = select(User).where(User.telegram_id == user_id).values(

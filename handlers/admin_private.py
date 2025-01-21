@@ -1,3 +1,4 @@
+from datetime import datetime
 from aiogram import F, Router, types
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.state import State, StatesGroup
@@ -12,8 +13,6 @@ from keyboards.reply import get_keyboard
 
 admin_router = Router()
 admin_router.message.filter(ChatTypeFilter(["private"]), IsAdmin())
-
-
 
 
 class AddTask(StatesGroup):
@@ -39,15 +38,24 @@ async def tasks(message: types.Message, session: AsyncSession):
         tasks = await get_tasks(session, message)
     except:
         await message.answer(f"Ошибка при получении данных. Проверьте ваши права доступа.")
+    print(tasks)
     for task in tasks:
         await message.answer(
-            f"id: {task['id']}\n Название: {task['name']}\n Описание: {task['description']}",
-            reply_markup=get_callback_btns(
-                btns={
-                    "Удалить": f"delete_{task['id']}",
-                    "Изменить": f"change_{task['id']}",
-                }
-            ),
+            f"\
+            id: {task['id']}\n\
+            Название: {task['name']}\n\
+            Описание: {task['description']}\n\
+            Статус: {task['status']}\n\
+            Автор: {task['author']}\n\
+            Исполнитель: {task['executor']}\n\
+            Метки: {task['labels'] if task['labels'] != [] else 0 }\n\
+            Дата создания: {datetime.fromisoformat(task['created_at']).strftime('%d.%m.%Y %H:%M')}",
+            # reply_markup=get_callback_btns(
+            #     btns={
+            #         "Удалить": f"delete_{task['id']}",
+            #         "Изменить": f"change_{task['id']}",
+            #     }
+            # ),
         )
     await message.answer("ОК, вот список задач ⏫")
 
