@@ -1,0 +1,22 @@
+services:
+  bot:
+    build:
+      context: ./
+    volumes:
+      - ./:/bot  # Монтируем код для удобства разработки
+    depends_on:
+      - task_manager
+    env_file:
+      - .env
+    command: >
+      sh -c "poetry run python app.py"
+      
+
+  task_manager:
+    image: zhukata/django_app
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
