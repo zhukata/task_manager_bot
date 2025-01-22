@@ -36,20 +36,20 @@ async def tasks(message: types.Message, session: AsyncSession):
     await message.answer('погоди секунду')
     try:
         tasks = await get_tasks(session, message)
-    except:
+    except Exception as e:
         await message.answer(f"Ошибка при получении данных. Проверьте ваши права доступа.")
+        print(e)
     print(tasks)
     for task in tasks:
         await message.answer(
-            f"\
-            id: {task['id']}\n\
-            Название: {task['name']}\n\
-            Описание: {task['description']}\n\
-            Статус: {task['status']}\n\
-            Автор: {task['author']}\n\
-            Исполнитель: {task['executor']}\n\
-            Метки: {task['labels'] if task['labels'] != [] else 0 }\n\
-            Дата создания: {datetime.fromisoformat(task['created_at']).strftime('%d.%m.%Y %H:%M')}",
+            f"id: {task['id']}\n\
+Название: {task['name']}\n\
+Описание: {task['description']}\n\
+Статус: {task['status']}\n\
+Автор: {task['author']}\n\
+Исполнитель: {task['executor']}\n\
+Метки: {task['labels'] if task['labels'] != [] else 0 }\n\
+Дата создания: {datetime.fromisoformat(task['created_at']).strftime('%d.%m.%Y %H:%M')}",
             # reply_markup=get_callback_btns(
             #     btns={
             #         "Удалить": f"delete_{task['id']}",

@@ -8,9 +8,10 @@ del_kbd = ReplyKeyboardRemove()
 start_kb = ReplyKeyboardBuilder()
 start_kb.add(
     KeyboardButton(text="Авторизация"),
+    KeyboardButton(text="Список задач"),
     KeyboardButton(text="О боте"),
 )
-start_kb.adjust(1, 1)
+start_kb.adjust(1, 1, 1)
 
 
 
@@ -26,11 +27,8 @@ def get_keyboard(
     Parameters request_contact and request_location must be as indexes of btns args for buttons you need.
     Example:
     get_keyboard(
-            "Меню",
-            "О магазине",
-            "Варианты оплаты",
-            "Варианты доставки",
-            "Отправить номер телефона"
+            "Задачи",
+            "О боте",
             placeholder="Что вас интересует?",
             request_contact=4,
             sizes=(2, 2, 1)

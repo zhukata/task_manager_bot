@@ -23,19 +23,19 @@ async def auth_user(session, message, data):
             if not access_token or not refresh_token:
                 raise ValueError("Ответ API не содержит токенов")
 
-            # Получаем пользователя из базы данных
             user_id = message.from_user.id
             print(f"User ID: {user_id}")
-            user = await orm_get_user(session, user_id)
+            # user = await orm_get_user(session, user_id)
             new_user = await make_data(user_id, access_token, refresh_token)
 
-            if user:
-                #Обновляем пользователя в базе
+            # Проверяем есть ли пользователь в бд
+            if check_user(session, message, user_id):
                 try:
-                    orm_update_user(session, user_id, new_user)
+                #Обновляем пользователя в базе
+                    await orm_update_user(session, user_id, new_user)
                     await message.answer("Вы уже авторизованы!")
                 except Exception as e:
-                    print(f"Ошибка при обновлении пользователя: {e}")
+                    print(f"Ошибка при обновлении пользователя в {__name__}: {e}")
                     await message.answer("Произошла ошибка. Попробуйте позже.")
             else:
                 # Если пользователь не найден
@@ -52,10 +52,19 @@ async def auth_user(session, message, data):
 
     except Exception as e:
         # Логируем ошибку и уведомляем пользователя
-        print(f"Ошибка в auth_user: {e}")
+        print(f"Ошибка в {__name__}: {e}")
         await message.answer("Произошла ошибка. Попробуйте позже.")
-            
-            
+
+
+async def check_user(session, message, user_id):
+    user_id = message.from_user.id
+    try:
+        user = await orm_get_user(session, user_id)
+        return True
+    except:
+        return False
+
+
 async def add_user(session, message, new_user):
     try:
         print('Start adding user...')
@@ -64,7 +73,7 @@ async def add_user(session, message, new_user):
         await message.answer("Вы успешно авторизовались! Теперь вы можете получать данные.")
     except Exception as e:
         # Логируем ошибку и уведомляем пользователя
-        print(f"Ошибка при добавлении пользователя: {e}")
+        print(f"Ошибка в {__name__} при добавлении пользователя: {e}")
         await message.answer("Ошибка базы данных. Попробуйте позже.")
 
 

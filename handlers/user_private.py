@@ -1,3 +1,4 @@
+import os
 from aiogram import F, Bot, Router, types
 from aiogram.filters import CommandStart, Command, or_f
 from aiogram.fsm.state import State, StatesGroup
@@ -5,13 +6,13 @@ from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api import add_user, auth_user
+from api import add_user, auth_user, check_user
 from filters.chat_types import ChatTypeFilter
 from keyboards import reply
 
 user_private_router = Router()
 user_private_router.message.filter(ChatTypeFilter(['private']))
-
+PUBLIC_URL = os.getenv('PUBLIC_URL', '')
 
 LOGIN_KB = reply.get_keyboard(
     "Добавить задачу",
@@ -27,7 +28,7 @@ class AddUser(StatesGroup):
 
 
 @user_private_router.message(CommandStart())
-async def start_cmd(message: types.Message):
+async def start_cmd(message: types.Message, session: AsyncSession):
     await message.answer(
         "Привет, я твой помощник",
         reply_markup=reply.start_kb.as_markup()
@@ -36,7 +37,9 @@ async def start_cmd(message: types.Message):
 
 @user_private_router.message(or_f(Command('about'), F.text.contains("О боте")))
 async def about(message: types.Message):
-    await message.answer("Я бот менеджер задач")
+    await message.answer(f"Я бот менеджер задач.\n\
+Если вы хотите узнать больше перейдите по ссылке:\n\
+{PUBLIC_URL}")
 
 
 # Код машины состояний:
